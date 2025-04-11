@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>Pokémon Search</h1>
+    <h4>This website displays Pokemon images and abilities.Just enter the name if thge pokemon you want to search for.</h4>>
+    <input type="text" id="pokemon-name" placeholder="Enter Pokémon name">
+    <button onclick="searchPokemon()">Submit</button>
+
+    <div id="pokemon-data"></div>
+
+    <script>
+        async function searchPokemon() {
+            const pokemonName = document.getElementById("pokemon-name").value.toLowerCase();
+            const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Pokémon not found");
+
+                const data = await response.json();
+                document.getElementById("pokemon-data").innerHTML = `
+                    <h2>${data.name.charAt(0).toUpperCase() + data.name.slice(1)}</h2>
+                    <img id="pokemon-image" src="${data.sprites.front_default}" alt="${data.name}">
+                    <h3>Abilities:</h3>
+                    <ul>${data.abilities.map(ability => `<li>${ability.ability.name}</li>`).join("")}</ul>
+                `;
+            } catch (error) {
+                document.getElementById("pokemon-data").innerHTML = `<p style="color: red;">${error.message}</p>`;
+            }
+        }
+    </script>
+
+</body>
+</html>
